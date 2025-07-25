@@ -1,12 +1,20 @@
-import MealGrid from "@/components/meals/MealGrid";
-import classes from "./page.module.css";
+import { Suspense } from "react";
 import Link from "next/link";
+import classes from "./page.module.css";
+import MealGrid from "@/components/meals/MealGrid";
+import { getMeals } from "@/lib/meal";
+
+const Meals = async () => {
+  const meals = await getMeals();
+  return <MealGrid meals={meals} />;
+};
+
 const MealsPage = () => {
   return (
     <>
       <header className={classes.header}>
         <h1>
-          Delicius meals, created{" "}
+          Delicious meals, created{" "}
           <span className={classes.highlight}>by you</span>
         </h1>
         <p>
@@ -17,7 +25,11 @@ const MealsPage = () => {
         </p>
       </header>
       <main className={classes.main}>
-        <MealGrid meals={[]} />
+        <Suspense
+          fallback={<div className={classes.loading}>Fetching Meals....</div>}
+        >
+          <Meals />
+        </Suspense>
       </main>
     </>
   );
